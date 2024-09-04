@@ -1,5 +1,4 @@
 use actix_cors::Cors;
-use actix_files::NamedFile;
 use actix_multipart::Multipart;
 use actix_web::{web, App, Error, HttpResponse, HttpServer, HttpRequest, Responder};
 use futures_util::stream::TryStreamExt;
