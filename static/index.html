@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S3 File Upload</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="login-form">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
+
+    <h1>Upload File</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="file" required />
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        document.getElementById('login-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            
+            if (response.ok) {
+                const token = await response.json();
+                localStorage.setItem('jwt', token);
+                alert('Login successful!');
+            } else {
+                alert('Login failed!');
+            }
+        };
+
+        document.getElementById('upload-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const file = document.getElementById('file').files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const token = localStorage.getItem('jwt');
+            const response = await fetch('/upload', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            
+            if (response.ok) {
+                alert('File uploaded successfully!');
+            } else {
+                alert('File upload failed!');
+            }
+        };
+    </script>
+</body>
+</html>
